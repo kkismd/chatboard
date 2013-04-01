@@ -1,0 +1,34 @@
+// Place all the styles related to the Rooms controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+body {
+  background-color: black;
+  color: white;
+}
+table {
+  border-width: 10px;
+  border-style: solid;
+  border-color: white;
+  border-collapse: collapse;
+  background-color: #ffffff;
+}
+td {
+  border-width: 0;
+  border-style: none;
+  border-color: #0000ff;
+  border-collapse: collapse;
+  padding: 0;
+  margin: 0;
+  width: 5px;
+  height: 5px;
+}
+td.black { background-color: #000; }
+td.white { background-color: #fff; }
+
+#chat-screen {
+  width: 600px;
+  height: 600px;
+  float: left;
+  border: 1px white dashed;
+  margin: 10px;
+}
