@@ -1,21 +1,33 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <b>Title:</b>
   <%= @room.title %>
 </p>
 
-<div id="chat-screen">
-<span class="comment">ｷﾀ━━━━━━━(ﾟ∀ﾟ)━━━━━━━!</span>
+<div id="chat-screen"></div>
+
+<%# コメントを作るときのひな形 -%>
+<div id="template">
+  <span class="comment">ｷﾀ━━━━━━━(ﾟ∀ﾟ)━━━━━━━!</span>
 </div>
+<button id="post">コメントする</button>
 <script type="text/javascript">
   var c = $('.comment');
   var pos = c.position();
-  var lifetime = 4.0;
-  var wait = 50.0;
+  var lifetime = 3.0;
+  var wait = 20.0;
   var width;
   width = ($('#chat-screen').width() + c.width()) / (lifetime / wait * 1000);
-  console.log(width);
+
+  function initial_position() {
+      var bottom = Math.max.apply(null, $('#chat-screen span.comment').map(function(i, c){ return c.position().top + c.height() }));
+      var top = bottom + $('#template span.comment').height();
+      var left = chat_screen().width();
+
+      return {top: top, left: left};
+  }
+  function chat_screen() { return $('#chat-screen'); }
+
   function step(comment){
       newPos = comment.position();
       newPos.left = newPos.left - width;
@@ -23,19 +35,26 @@
       comment.css(newPos);
       return true;
   }
+
   function tick(f, comment) {
       setTimeout(function(){
           if ( f(comment) ) {
-              console.log(comment.position());
               tick(f, comment);
           }
       }, wait);
   }
-  tick(step, c);
+
+  $('#post').on('click', function(){
+      console.log('ボタンが押されました')
+      var comment = $('#template span.comment').clone();
+      comment.css(initial_position());
+      chat_screen().get(0).appendChild(comment.get(0));
+
+      tick(step, comment);
+  });
 </script>
 
 <p>
-  <b>Serial:</b>
   <%= @room.serial %>
 </p>
 <div class="qrcode">
