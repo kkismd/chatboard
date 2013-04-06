@@ -14,12 +14,16 @@ class RoomsController < ApplicationController
   # GET /rooms/1.json
   def show
     @room = Room.find(params[:id])
-    @qr = RQRCode::QRCode.new(@room.serial)
+    @qr = RQRCode::QRCode.new(mb_rooms_url(@room.serial), size:8)
 
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @room }
     end
+  end
+
+  def mb_show
+
   end
 
   # GET /rooms/new

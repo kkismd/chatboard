@@ -1,5 +1,9 @@
 Chatboard::Application.routes.draw do
-  resources :rooms
+  resources :rooms do
+    collection do
+      match 'mb_show/:serial', :action => 'mb_show', :as => 'mb'
+    end
+  end
 
 
   # The priority is based upon order of creation:
