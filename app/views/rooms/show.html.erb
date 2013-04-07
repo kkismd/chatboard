@@ -1,3 +1,4 @@
+<%= javascript_include_tag "move.min.js" %>
 <p id="notice"><%= notice %></p>
 
 <p>
@@ -13,13 +14,9 @@
 <button id="post">コメントする</button>
 <script type="text/javascript">
     var config = {
-        lifetime: 2.5,
-        wait: 20.0,
-        sec: 1000
+        lifetime: '3s'
     };
-    function speed(c) {
-        return ($('#chat-screen').width() + c.width()) / (config.lifetime / config.wait * config.sec);
-    }
+
     var words = [
         "★≡＝―　★≡＝―　★≡＝―　★≡＝―　★≡＝―　★≡＝―　★≡＝―　★≡＝―",
         "▁▂▃▅▆▇█▇▆▅▃▂▁▂▃▅▆▇█▇▆▅▃▂▁▂▃▅▆▇█▇▆▅▃▂▁▁▂▃▅▆▇█▇▆▅▃▂▁▂▃▅▆▇█▇▆▅▃▂▁",
@@ -35,8 +32,9 @@
     ];
 
     function initial_position() {
-        var bottom = Math.max.apply(null, $('#chat-screen span.comment').map(function(i, c){ return $(c).position().top + $(c).height() }));
-        var top = bottom
+        var top = Math.max.apply(null, $('#chat-screen span.comment').map(function (i, c) {
+            return $(c).position().top + $(c).height()
+        }));
         // 下までいっぱいになったら弾幕モード
         if (top > chat_screen().height()) {
             top = Math.floor(Math.random() * chat_screen().height());
@@ -52,33 +50,21 @@
         return words[i];
     }
 
-    function step(comment){
-        var pos = comment.position();
-        pos.left = pos.left - speed(comment);
-        if (pos.left + comment.width() + 10 < 0) {
-            comment.remove();
-            return false;
-        }
-        comment.css(pos);
-        return true;
-    }
-
-    function tick(f, comment, wait) {
-        setTimeout(function(){
-            if ( f(comment) ) {
-                tick(f, comment, wait);
-            }
-        }, wait);
-    }
-
     $('#post').on('click', function(){
         var comment = $('#template span.comment').clone();
         comment.text(random_word());
         comment.css(initial_position());
         chat_screen().append(comment);
 
-        tick(step, comment, config.wait);
+        go(comment.get(0), config.lifetime);
     });
+    function go(element, lifetime) {
+        move(element).
+                x(0 - (chat_screen().width() + $(element).width())).
+                duration(lifetime).
+                ease('linear').
+                end(function(){ $(element).remove();});
+    }
 </script>
 
 <p>
