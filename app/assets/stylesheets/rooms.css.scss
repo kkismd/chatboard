@@ -4,6 +4,7 @@
 body {
   background-color: black;
   color: white;
+  font-family: Sans-serif;
 }
 table {
   border-width: 10px;
@@ -29,8 +30,8 @@ td.white { background-color: #fff; }
   position: relative;
   width: 600px;
   height: 600px;
+  background-image: url(http://cdn-ak.f.st-hatena.com/images/fotolife/p/pema/20130222/20130222205814.gif);
   float: left;
-  border: 1px white dashed;
   margin: 10px;
   overflow: hidden;
 }
@@ -46,3 +47,15 @@ td.white { background-color: #fff; }
 #template {
   display: none;
 }
+
+#template {
+  display: none;
+}
+
+.comment {
+  position: absolute;
+  white-space: nowrap;
+  font-size: 18pt;
+  text-shadow: -1px -1px #000, 1px -1px #000, -1px 1px #000, 1px 1px #000;
+}
+

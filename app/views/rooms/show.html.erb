@@ -1,3 +1,4 @@
+<%= javascript_include_tag "move.min.js" %>
 <p id="notice"><%= notice %></p>
 
 <p>
@@ -8,69 +9,81 @@
 
 <%# コメントを作るときのひな形 -%>
 <div id="template">
-  <span class="comment">ｷﾀ━━━━━━━(ﾟ∀ﾟ)━━━━━━━!</span>
+  <span class="comment"></span>
 </div>
 <button id="post">コメントする</button>
 <script type="text/javascript">
-  var c = $('.comment');
-  var pos = c.position();
-  var lifetime = 3.0;
-  var wait = 20.0;
-  var width;
-  width = ($('#chat-screen').width() + c.width()) / (lifetime / wait * 1000);
+    var config = {
+        lifetime: '3s'
+    };
 
-  function initial_position() {
-      var bottom = Math.max.apply(null, $('#chat-screen span.comment').map(function(i, c){ return c.position().top + c.height() }));
-      var top = bottom + $('#template span.comment').height();
-      var left = chat_screen().width();
+    var words = [
+        "★≡＝―　★≡＝―　★≡＝―　★≡＝―　★≡＝―　★≡＝―　★≡＝―　★≡＝―",
+        "▁▂▃▅▆▇█▇▆▅▃▂▁▂▃▅▆▇█▇▆▅▃▂▁▂▃▅▆▇█▇▆▅▃▂▁▁▂▃▅▆▇█▇▆▅▃▂▁▂▃▅▆▇█▇▆▅▃▂▁",
+        "┣¨┣¨┣¨┣¨┣¨┣¨┣¨┣¨┣¨┣¨┣¨┣¨┣¨ ┣¨┣¨┣¨┣¨┣¨┣¨┣¨┣¨┣¨┣¨┣¨┣¨┣¨ ┣¨┣¨┣¨",
+        "ｷﾀ━━━━━━━━(ﾟ∀ﾟ)━━━━━━━━━━!!",
+        "ちいいいいいいいいいいいいいさなああああああああおおおおおおおおおおっぱあああああああいい!!!!!!!",
+        "急に歌うよ～",
+        "きしめええええええええええええええええええええええええええええええええええええええ",
+        "真っ赤な誓いいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいい",
+        "MTTO! MTTO!",
+        "(」・ω・)」うー！(／・ω・)／にゃー！",
+        "＼(・ω・＼)SAN値！(／・ω・)／ピンチ！"
+    ];
 
-      return {top: top, left: left};
-  }
-  function chat_screen() { return $('#chat-screen'); }
+    function initial_position() {
+        var top = Math.max.apply(null, $('#chat-screen span.comment').map(function (i, c) {
+            return $(c).position().top + $(c).height()
+        }));
+        // 下までいっぱいになったら弾幕モード
+        if (top > chat_screen().height()) {
+            top = Math.floor(Math.random() * chat_screen().height());
+        }
+        var left = chat_screen().width();
 
-  function step(comment){
-      newPos = comment.position();
-      newPos.left = newPos.left - width;
-      if (newPos.left + comment.width() + 10 < 0) return false;
-      comment.css(newPos);
-      return true;
-  }
+        return {top: top, left: left};
+    }
+    function chat_screen() { return $('#chat-screen'); }
+    function random_word() {
+        var n = words.length;
+        var i = Math.floor(Math.random() * n);
+        return words[i];
+    }
 
-  function tick(f, comment) {
-      setTimeout(function(){
-          if ( f(comment) ) {
-              tick(f, comment);
-          }
-      }, wait);
-  }
+    $('#post').on('click', function(){
+        var comment = $('#template span.comment').clone();
+        comment.text(random_word());
+        comment.css(initial_position());
+        chat_screen().append(comment);
 
-  $('#post').on('click', function(){
-      console.log('ボタンが押されました')
-      var comment = $('#template span.comment').clone();
-      comment.css(initial_position());
-      chat_screen().get(0).appendChild(comment.get(0));
-
-      tick(step, comment);
-  });
+        go(comment.get(0), config.lifetime);
+    });
+    function go(element, lifetime) {
+        move(element).
+                x(0 - (chat_screen().width() + $(element).width())).
+                duration(lifetime).
+                ease('linear').
+                end(function(){ $(element).remove();});
+    }
 </script>
 
 <p>
   <%= @room.serial %>
 </p>
 <div class="qrcode">
-<table>
-  <%- @qr.modules.each_index do |x| -%>
-  <tr>
-    <%- @qr.modules.each_index do |y| -%>
-        <%- if @qr.dark?(x,y) -%>
-        <td class="black"></td>
-        <%- else -%>
-        <td class="white"></td>
-        <%- end -%>
+  <table>
+    <%- @qr.modules.each_index do |x| -%>
+        <tr>
+          <%- @qr.modules.each_index do |y| -%>
+              <%- if @qr.dark?(x,y) -%>
+                  <td class="black"></td>
+              <%- else -%>
+                  <td class="white"></td>
+              <%- end -%>
+          <%- end -%>
+        </tr>
     <%- end -%>
-  </tr>
-  <%- end -%>
-</table>
+  </table>
 </div>
 
 <%= link_to 'Edit', edit_room_path(@room) %> |

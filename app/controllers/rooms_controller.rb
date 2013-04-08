@@ -14,8 +14,7 @@ class RoomsController < ApplicationController
   # GET /rooms/1.json
   def show
     @room = Room.find(params[:id])
-    url = mobile_input_url(@room.serial)
-    @qr = RQRCode::QRCode.new(url, :size => 8)
+    @qr = RQRCode::QRCode.new(mb_rooms_url(@room.serial), size:8)
 
     respond_to do |format|
       format.html # show.html.erb
@@ -24,7 +23,7 @@ class RoomsController < ApplicationController
   end
 
   # GET /rooms/:serial
-  def mobile_input
+  def mb_show
     @room = Room.where(:serial => params[:serial])
   end
 
