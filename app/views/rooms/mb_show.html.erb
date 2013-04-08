@@ -1,6 +1,9 @@
-<%= form_tag action: :mb_post do %>
+<%- content_for :header do -%>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<%- end -%>
+<%= form_tag mb_rooms_path do %>
     <%= hidden_field_tag 'serial', h(params[:serial]) %>
-    <%= text_area_tag 'comment', '', cols:'80', rows:'25' %>
-
+    <%= text_area_tag 'comment', '', cols:'40', rows:'5' %>
+    <br />
     <%= submit_tag '投稿' %>
 <%- end -%>

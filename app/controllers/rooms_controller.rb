@@ -14,7 +14,8 @@ class RoomsController < ApplicationController
   # GET /rooms/1.json
   def show
     @room = Room.find(params[:id])
-    @qr = RQRCode::QRCode.new(mb_rooms_url(@room.serial), size:8)
+    url = url_for(:action => :mb_show, :serial => @room.serial)
+    @qr = RQRCode::QRCode.new(url, size:8)
 
     respond_to do |format|
       format.html # show.html.erb
@@ -99,7 +100,16 @@ class RoomsController < ApplicationController
       return
     end
 
-    Pusher[serial].trigger('comment', {:message => params[:comment]}) if params[:comment].present?
+    Pusher.app_id = Settings.pusher.app_id
+    Pusher.key = Settings.pusher.key
+    Pusher.secret = Settings.pusher.secret
+    event = 'comment'
+    channel = params[:serial]
+
+    comments = params[:comment].split(/\r\n|\r|\n/)
+
+    Pusher.trigger(channel, event, {comments: comments}) if params[:comment].present?
+    redirect_to :action => :mb_show, :serial => params[:serial]
   end
 
   private

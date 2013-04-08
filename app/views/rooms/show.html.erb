@@ -12,25 +12,11 @@
 <div id="template">
   <span class="comment"></span>
 </div>
-<button id="post">コメントする</button>
+
 <script type="text/javascript">
     var config = {
         lifetime: '3s'
     };
-
-    var words = [
-        "★≡＝―　★≡＝―　★≡＝―　★≡＝―　★≡＝―　★≡＝―　★≡＝―　★≡＝―",
-        "▁▂▃▅▆▇█▇▆▅▃▂▁▂▃▅▆▇█▇▆▅▃▂▁▂▃▅▆▇█▇▆▅▃▂▁▁▂▃▅▆▇█▇▆▅▃▂▁▂▃▅▆▇█▇▆▅▃▂▁",
-        "┣¨┣¨┣¨┣¨┣¨┣¨┣¨┣¨┣¨┣¨┣¨┣¨┣¨ ┣¨┣¨┣¨┣¨┣¨┣¨┣¨┣¨┣¨┣¨┣¨┣¨┣¨ ┣¨┣¨┣¨",
-        "ｷﾀ━━━━━━━━(ﾟ∀ﾟ)━━━━━━━━━━!!",
-        "ちいいいいいいいいいいいいいさなああああああああおおおおおおおおおおっぱあああああああいい!!!!!!!",
-        "急に歌うよ～",
-        "きしめええええええええええええええええええええええええええええええええええええええ",
-        "真っ赤な誓いいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいいい",
-        "MTTO! MTTO!",
-        "(」・ω・)」うー！(／・ω・)／にゃー！",
-        "＼(・ω・＼)SAN値！(／・ω・)／ピンチ！"
-    ];
 
     function initial_position() {
         //noinspection JSUnresolvedVariable
@@ -46,11 +32,7 @@
         return {top: top, left: left};
     }
     function chat_screen() { return $('#chat-screen'); }
-    function random_word() {
-        var n = words.length;
-        var i = Math.floor(Math.random() * n);
-        return words[i];
-    }
+
     function new_comment(text) {
         var comment = $('#template span.comment').clone();
         comment.text(text);
@@ -58,10 +40,6 @@
         chat_screen().append(comment);
         go(comment.get(0), config.lifetime);
     }
-
-    $('#post').on('click', function(){
-        new_comment(random_word());
-    });
     function go(element, lifetime) {
         move(element).
                 x(0 - (chat_screen().width() + $(element).width())).
@@ -70,14 +48,17 @@
                 end(function(){ $(element).remove();});
     }
     var pusher = new Pusher('23fcec0bad6a7e951bae');
-    var channel = pusher.subscribe('test_channel');
-    channel.bind('my_event', function (data) {
-        new_comment(data);
+    var channel = pusher.subscribe('<%= @room.serial %>');
+    channel.bind('comment', function (data) {
+        var comments = data.comments
+        $.each(comments, function(i, comment){
+            new_comment(comment);
+        });
     });
 </script>
 
 <p>
-  <%= @room.serial %>
+  <%= link_to @room.serial, url_for(:action => :mb_show, :serial => @room.serial) %>
 </p>
 <div class="qrcode">
   <table>
