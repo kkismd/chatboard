@@ -1,0 +1,6 @@
+<%= form_tag action: :mb_post do %>
+    <%= hidden_field_tag 'serial', h(params[:serial]) %>
+    <%= text_area_tag 'comment', '', cols:'80', rows:'25' %>
+
+    <%= submit_tag '投稿' %>
+<%- end -%>
