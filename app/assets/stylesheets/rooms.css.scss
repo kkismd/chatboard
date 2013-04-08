@@ -27,13 +27,25 @@ td.black { background-color: #000; }
 td.white { background-color: #fff; }
 
 #chat-screen {
+  position: relative;
   width: 600px;
   height: 600px;
   background-image: url(http://cdn-ak.f.st-hatena.com/images/fotolife/p/pema/20130222/20130222205814.gif);
   float: left;
   margin: 10px;
   overflow: hidden;
-  position: relative;
+}
+
+.comment {
+  position: absolute;
+  white-space: nowrap;
+  top: 0px;
+  left: 600px;
+  font-size: 16pt;
+}
+
+#template {
+  display: none;
 }
 
 #template {
