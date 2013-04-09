@@ -2,11 +2,23 @@
 <%= javascript_include_tag 'http://js.pusher.com/2.0/pusher.min.js' %>
 <p id="notice"><%= notice %></p>
 
-<p>
-  <%= @room.title %>
-</p>
-
-<div id="chat-screen"></div>
+<div id="chat-screen">
+  <div class="qrcode">
+    <table>
+      <%- @qr.modules.each_index do |x| -%>
+          <tr>
+            <%- @qr.modules.each_index do |y| -%>
+                <%- if @qr.dark?(x,y) -%>
+                    <td class="black"></td>
+                <%- else -%>
+                    <td class="white"></td>
+                <%- end -%>
+            <%- end -%>
+          </tr>
+      <%- end -%>
+    </table>
+  </div>
+</div>
 
 <%# コメントを作るときのひな形 -%>
 <div id="template">
@@ -59,22 +71,6 @@
 
 <p>
   <%= link_to @room.serial, url_for(:action => :mb_show, :serial => @room.serial) %>
+  <%= link_to 'Back', rooms_path %>
 </p>
-<div class="qrcode">
-  <table>
-    <%- @qr.modules.each_index do |x| -%>
-        <tr>
-          <%- @qr.modules.each_index do |y| -%>
-              <%- if @qr.dark?(x,y) -%>
-                  <td class="black"></td>
-              <%- else -%>
-                  <td class="white"></td>
-              <%- end -%>
-          <%- end -%>
-        </tr>
-    <%- end -%>
-  </table>
-</div>
 
-<%= link_to 'Edit', edit_room_path(@room) %> |
-<%= link_to 'Back', rooms_path %>
