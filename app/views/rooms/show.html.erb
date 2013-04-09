@@ -31,7 +31,6 @@
     };
 
     function initial_position() {
-        //noinspection JSUnresolvedVariable
         var top = Math.max.apply(null, $('#chat-screen span.comment').map(function (i, c) {
             return $(c).position().top + $(c).height()
         }));
@@ -60,7 +59,7 @@
                 end(function(){ $(element).remove();});
     }
     var pusher = new Pusher('23fcec0bad6a7e951bae');
-    var channel = pusher.subscribe('<%= @room.serial %>');
+    var channel = pusher.subscribe('<%= @serial %>');
     channel.bind('comment', function (data) {
         var comments = data.comments
         $.each(comments, function(i, comment){
@@ -69,8 +68,8 @@
     });
 </script>
 
-<p>
-  <%= link_to @room.serial, url_for(:action => :mb_show, :serial => @room.serial) %>
+<p class="navi">
+  <%= link_to @serial, url_for(:action => :mb_show, :serial => @serial) %>
   <%= link_to 'Back', rooms_path %>
 </p>
 
