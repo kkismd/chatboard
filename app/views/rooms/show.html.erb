@@ -69,7 +69,7 @@
 </script>
 
 <p class="navi">
-  <%= link_to @serial, url_for(:action => :mb_show, :serial => @serial) %>
-  <%= link_to 'Back', rooms_path %>
+  <%= link_to @serial, url_for(:action => :mb_show, :serial => @serial), :target => '_blank' %>
+  <%= link_to 'Back', root_path %>
 </p>
 
