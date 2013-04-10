@@ -66,3 +66,7 @@ Chatboard::Application.configure do
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
 end
+
+Pusher.app_id = ENV['PUSHER_APP_ID']
+Pusher.key    = ENV['PUSHER_KEY']
+Pusher.secret = ENV['PUSHER_SECRET']

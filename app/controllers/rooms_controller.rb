@@ -36,9 +36,6 @@ class RoomsController < ApplicationController
       return
     end
 
-    Pusher.app_id = Settings.pusher.app_id
-    Pusher.key = Settings.pusher.key
-    Pusher.secret = Settings.pusher.secret
     event = 'comment'
     channel = params[:serial]
 
