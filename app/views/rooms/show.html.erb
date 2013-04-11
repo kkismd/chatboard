@@ -1,8 +1,10 @@
 <%= javascript_include_tag 'move.min.js' %>
 <%= javascript_include_tag 'http://js.pusher.com/2.0/pusher.min.js' %>
 <p id="notice"><%= notice %></p>
-
 <div id="chat-screen">
+  <%- if @slideshare -%>
+      <%= render :partial => 'slideshare_iframe' %>
+  <%- end -%>
   <div class="qrcode" title="click to resize">
     <table>
       <%- @qr.modules.each_index do |x| -%>
@@ -31,9 +33,16 @@
     };
 
     function initial_position() {
-        var top = Math.max.apply(null, $('#chat-screen span.comment').map(function (i, c) {
-            return $(c).position().top + $(c).height()
-        }));
+        var top;
+        var comments = $('#chat-screen span.comment');
+        if (comments.length > 0) {
+            top = Math.max.apply(null, comments.map(function (i, c) {
+                return $(c).position().top + $(c).height()
+            }));
+        }
+        else {
+            top = 0;
+        }
         // 下までいっぱいになったら弾幕モード
         if (top > chat_screen().height()) {
             top = Math.floor(Math.random() * chat_screen().height());
@@ -78,9 +87,16 @@
         }
     })
 </script>
+<%- if Rails.env.development? -%>
+    <script type="text/javascript">
+      function testpost() {
+          new_comment('ｷﾀ━━━(ﾟ∀ﾟ)━( ﾟ∀)━( 　ﾟ)━(　　)━(　　)━(ﾟ 　)━(∀ﾟ )━(ﾟ∀ﾟ)━━━!!');
+      }
+    </script>
+    <%= button_to_function 'コメント', 'testpost();' %>
+<%- end -%>
 
 <p class="navi">
   <%= link_to @serial, url_for(:action => :mb_show, :serial => @serial), :target => '_blank' %>
   <%= link_to 'Back', root_path %>
 </p>
-

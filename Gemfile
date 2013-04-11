@@ -14,6 +14,9 @@ group :development do
   gem 'mysql2'
 end
 
+group :test do
+  gem 'test-unit'
+end
 
 # Gems used only for assets and not required
 # in production environments by default.

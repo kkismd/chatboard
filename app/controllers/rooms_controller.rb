@@ -23,6 +23,13 @@ class RoomsController < ApplicationController
     @qr = RQRCode::QRCode.new(url, size:8)
   end
 
+  def slideshare
+    @slideshare = SlideShare.new(params[:url])
+    return redirect_to root_path unless @slideshare.valid?
+
+    render text: @slideshare.slide_id
+  end
+
   # GET /rooms/mb/:serial
   def mb_show
     @serial = params[:serial]
