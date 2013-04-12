@@ -2,8 +2,9 @@
 <%= javascript_include_tag 'http://js.pusher.com/2.0/pusher.min.js' %>
 <p id="notice"><%= notice %></p>
 <div id="chat-screen">
-  <%- if @slideshare -%>
-      <%= render :partial => 'slideshare_iframe' %>
+  <%- if @slide -%>
+      <iframe src="<%= @slide.embed_url %>"
+              width="100%" height="100%" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" ></iframe>
   <%- end -%>
   <div class="qrcode" title="click to resize">
     <table>
@@ -90,7 +91,10 @@
 <%- if Rails.env.development? -%>
     <script type="text/javascript">
       function testpost() {
-          new_comment('ｷﾀ━━━(ﾟ∀ﾟ)━( ﾟ∀)━( 　ﾟ)━(　　)━(　　)━(ﾟ 　)━(∀ﾟ )━(ﾟ∀ﾟ)━━━!!');
+          var s = 'ｷﾀ━━━━(ﾟ∀ﾟ)━━━━!! ';
+          var num = Math.floor(Math.random() * 5);
+          s = new Array( num + 1 ).join( s );
+          new_comment(s);
       }
     </script>
     <%= button_to_function 'コメント', 'testpost();' %>
