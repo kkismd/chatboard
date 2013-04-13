@@ -22,9 +22,11 @@ html,body {
 }
 
 .comment {
+  color: white;
   position: absolute;
   white-space: nowrap;
-  font-size: 24pt;
+  font-size: 28pt;
+  font-weight: bold;
   text-shadow: -1px -1px #000, 1px -1px #000, -1px 1px #000, 1px 1px #000;
 }
 
@@ -43,7 +45,6 @@ div.qrcode {
     td {
       border-width: 0;
       border-style: none;
-      border-color: #0000ff;
       border-collapse: collapse;
       padding: 0;
       margin: 0;
@@ -60,7 +61,8 @@ div.qrcode {
 p.navi {
   margin: 1em;;
   a {
-    color: #cff;
+    color: white;
+    text-decoration: underline;
   }
 }
 

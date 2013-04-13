@@ -1,5 +1,7 @@
+<%- content_for :header do -%>
 <%= javascript_include_tag 'move.min.js' %>
 <%= javascript_include_tag 'http://js.pusher.com/2.0/pusher.min.js' %>
+<%- end -%>
 <p id="notice"><%= notice %></p>
 <div id="chat-screen">
   <%- if @slide -%>
@@ -27,47 +29,7 @@
 <div id="template">
   <span class="comment"></span>
 </div>
-
 <script type="text/javascript">
-    var config = {
-        lifetime: '6s'
-    };
-
-    function initial_position() {
-        var top;
-        var comments = $('#chat-screen span.comment');
-        if (comments.length > 0) {
-            top = Math.max.apply(null, comments.map(function (i, c) {
-                return $(c).position().top + $(c).height()
-            }));
-        }
-        else {
-            top = 0;
-        }
-        // 下までいっぱいになったら弾幕モード
-        if (top > chat_screen().height()) {
-            top = Math.floor(Math.random() * chat_screen().height());
-        }
-        var left = chat_screen().width();
-
-        return {top: top, left: left};
-    }
-    function chat_screen() { return $('#chat-screen'); }
-
-    function new_comment(text) {
-        var comment = $('#template span.comment').clone();
-        comment.text(text);
-        comment.css(initial_position());
-        chat_screen().append(comment);
-        go(comment.get(0), config.lifetime);
-    }
-    function go(element, lifetime) {
-        move(element).
-                x(0 - (chat_screen().width() + $(element).width())).
-                duration(lifetime).
-                ease('linear').
-                end(function(){ $(element).remove();});
-    }
     var pusher = new Pusher('<%= Pusher.key %>');
     var channel = pusher.subscribe('<%= @serial %>');
     channel.bind('comment', function (data) {
@@ -76,7 +38,6 @@
             new_comment(comment);
         });
     });
-
     var qrcode_size = 5;
     $('.qrcode').on('click', function (e) {
         var tds = $('.qrcode table td');
@@ -101,6 +62,7 @@
 <%- end -%>
 
 <p class="navi">
-  <%= link_to @serial, url_for(:action => :mb_show, :serial => @serial), :target => '_blank' %>
+  <%- mb_url = mb_rooms_url + '/' + @serial -%>
+  <%= link_to mb_url, mb_url, :target => '_blank' %>
   <%= link_to 'Back', root_path %>
 </p>
