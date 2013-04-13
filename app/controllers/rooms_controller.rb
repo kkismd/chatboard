@@ -43,16 +43,16 @@ class RoomsController < ApplicationController
   def mb_post
     serial = params[:serial]
     unless valid_serial?(serial)
-      render :text => ''
-      return
+      return render :text => ''
     end
 
     event = 'comment'
     channel = params[:serial]
-
     comments = params[:comment].split(/\r\n|\r|\n/)
+    color = params[:color]
+    data = {comments: comments, color: color}
 
-    Pusher.trigger(channel, event, {comments: comments}) if params[:comment].present?
+    Pusher.trigger(channel, event, data) if params[:comment].present?
     redirect_to :action => :mb_show, :serial => params[:serial]
   end
 

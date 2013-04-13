@@ -4,6 +4,12 @@
 <%= form_tag mb_rooms_path do %>
     <%= hidden_field_tag 'serial', @serial %>
     <%= text_area_tag 'comment', '', cols:'40', rows:'5' %>
-    <br />
+    <table><tr>
+      <%- ['white', 'red', 'cyan', 'pink', 'yellow', 'lime'].each do |color| -%>
+          <td style='background-color: <%= color %>;'>&nbsp;
+          <%= radio_button_tag 'color', color, false %>&nbsp;
+          </td>
+      <%- end -%>
+    </tr></table>
     <%= submit_tag '投稿' %>
 <%- end -%>

@@ -2,8 +2,21 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 config = {lifetime: '6s'}
-
+window.color_table = [
+   'white'
+   'red'
+   'cyan'
+   'pink'
+   'yellor'
+   'lime'
+]
 chat_screen = -> $('#chat-screen')
+
+color_name = (name) ->
+  if name in color_table
+    name
+  else
+    ''
 
 initial_position = ->
   comments = $('#chat-screen span.comment')
@@ -19,17 +32,20 @@ initial_position = ->
   left = chat_screen().width()
   {left: left, top: top}
 
-window.new_comment = (text) ->
-  comment = $('#template span.comment').clone()
-  comment.text(text)
-  comment.css(initial_position())
-  chat_screen().append(comment)
-  go(comment.get(0), config.lifetime)
-
-window.go = (element, lifetime) ->
+go = (element, lifetime) ->
   move(element)
     .x(0 - (chat_screen().width() + $(element).width()))
     .duration(lifetime)
     .ease('linear')
     .end(-> $(element).remove())
+
+window.new_comment = (text, color_code) ->
+  color = color_name(color_code)
+  comment = $('#template span.comment').clone()
+  comment
+    .text(text)
+    .css(initial_position())
+    .css({color: color})
+  chat_screen().append(comment)
+  go(comment.get(0), config.lifetime)
 

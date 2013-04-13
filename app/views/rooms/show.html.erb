@@ -33,9 +33,10 @@
     var pusher = new Pusher('<%= Pusher.key %>');
     var channel = pusher.subscribe('<%= @serial %>');
     channel.bind('comment', function (data) {
-        var comments = data.comments
+        var comments = data.comments;
+        var color = data.color;
         $.each(comments, function(i, comment){
-            new_comment(comment);
+            new_comment(comment, color);
         });
     });
     var qrcode_size = 5;
@@ -51,11 +52,12 @@
 </script>
 <%- if Rails.env.development? -%>
     <script type="text/javascript">
+      function rand(n) { return Math.floor(Math.random() * n); }
       function testpost() {
+          var c = color_table[ rand(6) ];
           var s = 'ｷﾀ━━━━(ﾟ∀ﾟ)━━━━!! ';
-          var num = Math.floor(Math.random() * 5);
-          s = new Array( num + 1 ).join( s );
-          new_comment(s);
+          s = new Array( rand(4) + 1 ).join( s );
+          new_comment(s, c);
       }
     </script>
     <%= button_to_function 'コメント', 'testpost();' %>
