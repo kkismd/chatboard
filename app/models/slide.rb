@@ -1,3 +1,5 @@
+require 'open-uri'
+
 class Slide
   def initialize(url)
     @url = url
@@ -11,13 +13,22 @@ class Slide
     if slideshare?
       slideshare_embed_url
     elsif googledocs?
-      googledocs_embet_url
+      googledocs_embed_url
+    elsif ustream?
+      ustream_embed_url
     else
       raise 'url is not valid'
     end
   end
 
-  require 'open-uri'
+  def ustream_embed_url
+    "http://www.ustream.tv/embed/#{channel_id}?v=3&amp;wmode=direct"
+  end
+
+  def channel_id
+    USTREAM_PATTERN.match(@url).to_a[0]
+  end
+
   def slideshare_embed_url
     'http://www.slideshare.net/slideshow/embed_code/' + slide_id.to_s
   end
@@ -33,17 +44,19 @@ class Slide
     data['slideshow_id'].to_s
   end
 
-  def googledocs_embet_url
+  def googledocs_embed_url
     @url.gsub(%r|(https://.*/)edit(#.*)?|) { $1 + 'embed?start=false&loop=false&delayms=60000' }
   end
 
-  SLIDESHARE_PATTERN = %r|\Ahttp://www.slideshare.net/|
-  GOOGLEDOCS_PATTERN = %r|\Ahttps://docs.google.com/presentation/|
+  SLIDESHARE_PATTERN = %r|\Ahttp://www\.slideshare\.net/|
+  GOOGLEDOCS_PATTERN = %r|\Ahttps://docs\.google\.com/presentation/|
+  USTREAM_PATTERN    = %r|\Ahttp://www\.ustream\.tv/channel/(.+)|
 
   def valid?
     # URLとして正当かチェック
     URI.parse(@url)
-    @url =~ SLIDESHARE_PATTERN || @url =~ GOOGLEDOCS_PATTERN
+    # パターンマッチ
+    @url =~ Regexp.union(SLIDESHARE_PATTERN, GOOGLEDOCS_PATTERN, USTREAM_PATTERN)
   rescue
     false
   end
@@ -54,5 +67,9 @@ class Slide
 
   def googledocs?
     @url =~ GOOGLEDOCS_PATTERN
+  end
+
+  def ustream?
+    @url =~ USTREAM_PATTERN
   end
 end
