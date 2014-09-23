@@ -8,4 +8,8 @@ Chatboard::Application.routes.draw do
   end
 
   root :to => 'rooms#top'
+  get 'sessions/destroy/:serial', :to => 'sessions#destroy'
+
+  get '/auth/:provider/callback', :to => 'sessions#callback'
+  post '/auth/:provider/callback', :to => 'sessions#callback'
 end

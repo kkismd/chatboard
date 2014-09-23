@@ -9,10 +9,9 @@ gem 'pg'
 gem 'rqrcode'
 gem 'pusher'
 gem 'rails_config'
-
-group :development do
-  gem 'mysql2'
-end
+gem 'twitter', '~> 4.8'
+gem 'omniauth-twitter'
+gem 'dotenv-rails', :groups => [:development, :test]
 
 group :test do
   gem 'test-unit'

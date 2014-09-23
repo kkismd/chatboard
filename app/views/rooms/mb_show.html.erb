@@ -13,3 +13,10 @@
     </tr></table>
     <%= submit_tag '投稿' %>
 <%- end -%>
+<%- if session[:uid] -%>
+    <%# Twitterにログインしている -%>
+    <p>Twitterの認証情報を削除する → <%= link_to 'erase token', "/sessions/destroy/#{@serial}" %></p>
+<%- else -%>
+    <%# Twitterにログインしていない -%>
+    <p>Twitterへの書き込みを許可する(認可画面へ) → <%= link_to 'Twitter Auth', '/auth/twitter' %></p>
+<%- end -%>

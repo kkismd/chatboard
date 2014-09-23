@@ -37,7 +37,8 @@ class RoomsController < ApplicationController
   # GET /rooms/mb/:serial
   def mb_show
     @serial = params[:serial]
-    render :text => '' unless valid_serial? @serial
+    session[:serial] = @serial
+    render :text => 'hmhm' unless valid_serial? @serial
   end
 
   def mb_post
@@ -52,7 +53,10 @@ class RoomsController < ApplicationController
     color = params[:color]
     data = {comments: comments, color: color}
 
-    Pusher.trigger(channel, event, data) if params[:comment].present?
+    if params[:comment].present?
+      Pusher.trigger(channel, event, data)
+      twitter_client.update(params[:comment]) if session[:access_token]
+    end
     redirect_to :action => :mb_show, :serial => params[:serial]
   end
 
@@ -66,4 +70,10 @@ class RoomsController < ApplicationController
     SecureRandom.hex
   end
 
+  def twitter_client
+    Twitter::Client.new(
+        oauth_token: session[:access_token],
+        oauth_token_secret: session[:token_secret]
+    )
+  end
 end
