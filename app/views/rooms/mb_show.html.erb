@@ -3,7 +3,10 @@
 <%- end -%>
 <%= form_tag mb_rooms_path do %>
     <%= hidden_field_tag 'serial', @serial %>
-    <%= text_area_tag 'comment', '', cols:'40', rows:'5' %>
+    <%= text_area_tag 'comment', '', cols:'40', rows:'5' %><br/>
+    <%- if session[:uid] -%>
+    ハッシュタグ: <%= text_field_tag 'tag', @tag, size: 20 %>
+    <%- end -%>
     <table><tr>
       <%- ['white', 'red', 'cyan', 'pink', 'yellow', 'lime'].each do |color| -%>
           <td style='background-color: <%= color %>;'>&nbsp;
@@ -15,8 +18,8 @@
 <%- end -%>
 <%- if session[:uid] -%>
     <%# Twitterにログインしている -%>
-    <p>Twitterの認証情報を削除する → <%= link_to 'erase token', "/sessions/destroy/#{@serial}" %></p>
+    <p>Twitterとの連携をやめる → <%= link_to '認証情報を削除', sessions_destroy_path %></p>
 <%- else -%>
     <%# Twitterにログインしていない -%>
-    <p>Twitterへの書き込みを許可する(認可画面へ) → <%= link_to 'Twitter Auth', '/auth/twitter' %></p>
+    <p>Twitterへの書き込みを許可する → <%= link_to '認可画面へ', '/auth/twitter' %></p>
 <%- end -%>

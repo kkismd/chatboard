@@ -1,0 +1,5 @@
+module Const
+  QR_SIZE = 9
+  SERIAL_LENGTH = 10
+  SERIAL_BYTES = SERIAL_LENGTH / 2
+end

@@ -6,8 +6,8 @@ class RoomsController < ApplicationController
   # GET /rooms
   def index
     @serial = new_serial_string
-    url = url_for(:action => :mb_show, :serial => @serial)
-    @qr = RQRCode::QRCode.new(url, size:8)
+    @mb_url = url_for(action: :mb_show, serial: @serial)
+    @qr = RQRCode::QRCode.new(@mb_url, size: Const::QR_SIZE)
 
     render :action => 'show'
   end
@@ -19,8 +19,8 @@ class RoomsController < ApplicationController
       return render text: ''
     end
 
-    url = url_for(:action => :mb_show, :serial => @serial)
-    @qr = RQRCode::QRCode.new(url, size:8)
+    @mb_url = url_for(action: :mb_show, serial: @serial, tag: '')
+    @qr = RQRCode::QRCode.new(@mb_url, size: Const::QR_SIZE)
   end
 
   def slide
@@ -28,17 +28,18 @@ class RoomsController < ApplicationController
     return redirect_to root_path unless @slide.valid?
 
     @serial = @slide.serial
-    url = url_for(:action => :mb_show, :serial => @serial)
-    @qr = RQRCode::QRCode.new(url, size:8)
-
+    @tag = with_sharp(params[:tag])
+    @mb_url = url_for(action: :mb_show, serial: @serial, tag: @tag)
+    @qr = RQRCode::QRCode.new(@mb_url, size: Const::QR_SIZE)
     render action: :show
   end
 
-  # GET /rooms/mb/:serial
+  # GET /rooms/mb/:serial/:tag
   def mb_show
-    @serial = params[:serial]
-    session[:serial] = @serial
-    render :text => 'hmhm' unless valid_serial? @serial
+    return render :text => 'hmhm' unless valid_serial? params[:serial]
+
+    session[:serial] = @serial = params[:serial]
+    session[:tag]    = @tag    = with_sharp(params[:tag])
   end
 
   def mb_post
@@ -48,26 +49,27 @@ class RoomsController < ApplicationController
     end
 
     event = 'comment'
-    channel = params[:serial]
-    comments = params[:comment].split(/\r\n|\r|\n/)
+    comment = params[:comment]
     color = params[:color]
+    tag = params[:tag].presence || ''
+    comments = comment.split(/\r\n|\r|\n/)
     data = {comments: comments, color: color}
 
-    if params[:comment].present?
-      Pusher.trigger(channel, event, data)
-      twitter_client.update(params[:comment]) if session[:access_token]
+    if comment.present?
+      Pusher.trigger(serial, event, data)
+      twitter_client.update("#{comment} #{tag}") if session[:access_token]
     end
-    redirect_to :action => :mb_show, :serial => params[:serial]
+    redirect_to url_for(action: :mb_show, serial: serial, tag: tag)
   end
 
   private
 
   def valid_serial?(str)
-    str =~ /[0-9a-f]{32}/ || str == 'TESTROOM'
+    str =~ /[0-9a-f]{#{Const::SERIAL_LENGTH}}/ || str == 'TESTROOM'
   end
 
   def new_serial_string
-    SecureRandom.hex
+    SecureRandom.hex(Const::SERIAL_BYTES)
   end
 
   def twitter_client
@@ -75,5 +77,16 @@ class RoomsController < ApplicationController
         oauth_token: session[:access_token],
         oauth_token_secret: session[:token_secret]
     )
+  end
+
+  def with_sharp(hash_tag)
+    return '' if hash_tag.blank?
+
+    result = hash_tag.strip
+    if result.start_with?('#')
+      result
+    else
+      '#' + result
+    end
   end
 end

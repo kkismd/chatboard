@@ -3,11 +3,23 @@
 
   <p>テスト用の部屋に入る → <%= link_to 'test room', 'rooms/TESTROOM' %></p>
   <p>新しい部屋を作る → <%= link_to 'new room', rooms_path %></p>
-  <p>slideshareやgoogledocsのスライド部屋を開く（URLを入力してボタンをクリック）
+  <p>slideshareやgoogledocsのスライド部屋を開く（URLとハッシュタグを入力して「開く」ボタンをクリック）</p>
   <%= form_tag slide_rooms_path, :method => :get  do %>
-      <%= text_field_tag :url, '', :size => 40 %>
-      <%= submit_tag '開く' %>
-  <%- end -%></p>
+      <table>
+        <tr>
+          <th>スライドURL:</th>
+          <td><%= text_field_tag :url, '', :size => 40 %></td>
+        </tr>
+        <tr>
+          <th>ハッシュタグ:</th>
+          <td><%= text_field_tag :tag, '', :size => 30 %>(Twitter連携用 / 省略可)</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><%= submit_tag '開く' %></td>
+        </tr>
+      </table>
+  <%- end -%>
 
   <h2>遊び方</h2>
   <ol>

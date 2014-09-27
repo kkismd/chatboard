@@ -65,7 +65,6 @@
 <%- end -%>
 
 <p class="navi">
-  <%- mb_url = mb_rooms_url + '/' + @serial -%>
-  <%= link_to mb_url, mb_url, :target => '_blank' %>
+  <%= link_to @mb_url, @mb_url, :target => '_blank' %>
   <%= link_to 'Back', root_path %>
 </p>

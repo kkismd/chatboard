@@ -6,7 +6,7 @@ class Slide
   end
 
   def serial
-    Digest::MD5.hexdigest(@url)
+    Digest::MD5.hexdigest(@url)[0, Const::SERIAL_LENGTH]
   end
 
   def embed_url
